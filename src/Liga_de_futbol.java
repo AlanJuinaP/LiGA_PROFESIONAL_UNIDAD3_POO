@@ -4,7 +4,7 @@ public class Liga_de_futbol {
     //lista de equipos
     private ArrayList<Equipo> equipos = new ArrayList<>();
     private ArrayList<Partido> registro_Result = new ArrayList<>();
-
+    private Equipo Campeon;
 
     //metodo para ingresar los equipos
     public void Agregar_Equipos(Equipo equipo){
@@ -39,6 +39,8 @@ public class Liga_de_futbol {
     equipos_Actuales = realizar_etapa("Final", equipos_Actuales);
     
     System.out.println("\n¡El torneo ha terminado!");
+    //Anadimos linea para dar un reconocimiento al ganador
+    System.out.println("¡El campeon del torneo es: " + Campeon.getNom_equipo() + "! FELICIDADES CRACKS");
    }
 
    //Metodo para iniciar una etapa del torneo
