@@ -5,71 +5,71 @@ public class Liga_de_futbol {
     private ArrayList<Equipo> equipos = new ArrayList<>();
     private ArrayList<Partido> registro_Result = new ArrayList<>();
 
-    //Estadistica de partidos jugados
-    private Map<String, Integer> estadistic = new HashMap<>();
 
     //metodo para ingresar los equipos
     public void Agregar_Equipos(Equipo equipo){
         equipos.add(equipo);
-        //eSTADISTICAS DEL EQUIPO
-        estadistic.put(equipo.getNom_equipo(),0);
         System.out.println("Equipo Agregado: " + equipo.getNom_equipo());
         
     }
-    //metodo para quitar un equipo
-    public void Quitar_Equipo(String nom_equip0){
-        equipos.removeIf(equipo -> equipo.getNom_equipo().equalsIgnoreCase(nom_equip0));
-        estadistic.remove(nom_equip0);
-        System.out.println(nom_equip0);
-
-    }
-
-    //metodo para ver las estadisiticas
-    public void ver_Estadistics(){
-        System.out.println("\nEsadisticas del equipo:");
-        estadistic.forEach((equipo, partidos_jugados) ->
-            System.out.println("Equipo:" + equipo + ", Partidos jugados: " + partidos_jugados));
-    }
-
-    //mostrar el registro de los partidos
-    public void most_Registro_Partidos(){
-        if(registro_Result.isEmpty()){
-            System.out.println("Aun no existen resultados");
-        }else{
-            System.out.println("\nRegisttro de Resultados:");
-            for(Partido partido : registro_Result){
-                System.out.println(partido);
-            }
+    //metodo para ver los equipos registrados
+    public void Ver_Equipos(){
+        System.out.println("\nEquipos Registrados: ");
+        for(Equipo equipo : equipos){
+            System.out.println("- " + equipo.getNom_equipo());
         }
     }
 
+   //Metodo iniciar torneo
+   public void Play_Torneo() throws Cantidad_Equipos_Invalido_Exception{
+    if (equipos.size() != 16) {
+        throw new Cantidad_Equipos_Invalido_Exception("Debe haber 16 equipos, para inicar el torneo");
+    }
+    System.out.println("\nEl torneo esta por iniciar");
 
-    public void realizar_Sorteo(String etapa) throws Cantidad_Equipos_Invalido_Exception{
-        if (etapa.equalsIgnoreCase("final")&& equipos.size() != 2) {
-            throw new Cantidad_Equipos_Invalido_Exception("Para la final, solo deben estar 2 equipos");
+    ArrayList<Equipo> equipos_Actuales = new ArrayList<>(equipos);
+
+    //Octavos de final
+    equipos_Actuales = realizar_etapa("Octavos de final", equipos_Actuales);
+    //Cuartos de final
+    equipos_Actuales = realizar_etapa("Cuartos de final", equipos_Actuales);
+    //Seminidal 
+    equipos_Actuales = realizar_etapa("Semifinales", equipos_Actuales);
+    //Final
+    equipos_Actuales = realizar_etapa("Final", equipos_Actuales);
     
-        }else if (!etapa.equalsIgnoreCase("Final")&& equipos.size() % 2 !=0) {
-            throw new Cantidad_Equipos_Invalido_Exception("La cantidad de equipos debe ser par para iniciar el partido");
+    System.out.println("\n¡El torneo ha terminado!");
+   }
 
-        }
+   //Metodo para iniciar una etapa del torneo
+   private ArrayList<Equipo> realizar_etapa(String etapa, ArrayList<Equipo> equipos_Actuales){
+    System.out.println("\n" + etapa + ":");
 
-        ArrayList<Partido> partidos;
-        if (etapa.equalsIgnoreCase("final")) {
-            partidos = new ArrayList<>();
-            partidos.add(new Partido(equipos.get(0), equipos.get(1)));
+    ArrayList<Equipo> ganadores = new ArrayList<>();
+    ArrayList<Partido> partidos = sorteoRecursivo(equipos_Actuales);
+
+    Random random = new Random();
+
+    for(Partido partido : partidos){
+        int marcador1 = random.nextInt(5);
+        int marcador2 = random.nextInt(5);
+
+        String result = marcador1 + "-" + marcador2;
+        partido.registrar_Resultado(result);
+
+        System.out.println(partido);
+        registro_Result.add(partido);
+
+        if (marcador1 > marcador2) {
+            ganadores.add(partido.getEquipo1());
         }else{
-            partidos = sorteoRecursivo(new ArrayList<>(equipos));
+            ganadores.add(partido.getEquipo2());
         }
-        System.out.println("\n Enfrentamientos para " + etapa + ":");
-        for (Partido partido : partidos){
-            System.out.println(partido);
-            registro_Result.add(partido);
-            actualizar_Estadistics(partido);
-        }
-        //registro_Result(partidos);
-        registrar_Resultados(partidos);
     }
+    return ganadores;
+   }
 
+   //metodo recursivo para generar enfrentamientos
     private ArrayList<Partido> sorteoRecursivo(ArrayList<Equipo>listaEquipos){
         if (listaEquipos.size() <= 2) {
             ArrayList<Partido>partidos = new ArrayList<>();
@@ -88,17 +88,15 @@ public class Liga_de_futbol {
         }
     }
 
-    private void actualizar_Estadistics(Partido partido){
-        estadistic.put(partido.getEquipo1().getNom_equipo(), estadistic.get(partido.getEquipo1().getNom_equipo()) + 1);
-        estadistic.put(partido.getEquipo2().getNom_equipo(), estadistic.get(partido.getEquipo2().getNom_equipo()) + 1);
-    }
-
-    private void registrar_Resultados(ArrayList<Partido> partidos){
-        Scanner scanner = new Scanner(System.in);
-        for(Partido partido : partidos){
-            System.out.println("Ingrese el resultado de " + partido + "(Ejemplos 2-1): ");
-            String result = scanner.nextLine();
-            partido.registrar_Resultado(result);
+    //Metodo para mostrar el registro completo del torneo
+    public void most_Registro_Partidos(){
+        if (registro_Result.isEmpty()) {
+            System.out.println("No hay partidos aun jugados");
+        }else{
+            System.out.println("\nAqui tienes el registro de todos los partidos");
+            for(Partido partido : registro_Result){
+                System.out.println(partido);
+            }
         }
     }
 
