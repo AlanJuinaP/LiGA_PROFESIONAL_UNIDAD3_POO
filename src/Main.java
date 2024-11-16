@@ -16,9 +16,10 @@ public class Main {
         while (!salir) {
             System.out.println("\n=====LIGA PRO====");
             System.out.println("1. Ver equipos registrados");
-            System.out.println("2. Iniciar Torneo");
-            System.out.println("3. Mostrar registro de resultados del torneo");
-            System.out.println("4. Salir");
+            System.out.println("2. Jugar una etapa del torneo");
+            System.out.println("3. Iniciar el torneo completo");
+            System.out.println("4. Mostrar registro de resultados del torneo");
+            System.out.println("5. Salir");
 
             System.out.println("Selecciones una opcion: ");
             int op = scanner.nextInt();
@@ -28,8 +29,39 @@ public class Main {
                 case 1:
                     liga.Ver_Equipos();
                     break;
-                
                 case 2:
+                System.out.println("\nSelecciona una etapa: ");
+                System.out.println("1. Octavos de final: ");
+                System.out.println("2. Cuartos de final");
+                System.out.println("3. Seminifales");
+                System.out.println("4. Final");
+                System.out.println("Ingresa el numero de la etapa que quieres: ");
+                int etapa = scanner.nextInt();
+                scanner.nextLine();
+                try {
+                    switch (etapa) {
+                        case 1:
+                            liga.Jugar_Etapa_Especifica("Octavos de final");
+                            break;
+                        case 2:
+                            liga.Jugar_Etapa_Especifica("Cuatos de final");
+                            break;
+                        case 3:
+                            liga.Jugar_Etapa_Especifica("Semifinales");
+                            break;
+                        case 4:
+                            liga.Jugar_Etapa_Especifica("Final");
+                            break;
+                        default:
+                            System.out.println("Opcion no valida. Intente de nuevo");               
+                    }
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    System.out.println("Error: " + e.getMessage());
+                }
+                break;
+
+                case 3:
                 //implementacion de excepcion "bloque try catch"
                 try {
                     liga.Play_Torneo();
@@ -39,12 +71,12 @@ public class Main {
                 }
                 break;
 
-                case 3:
+                case 4:
                 liga.most_Registro_Partidos();
                 break;
 
 
-                case 4:
+                case 5:
                 salir = true;
                 System.out.println("Saliendo del programa..... Gracias por usarlo :)");
                 break;
